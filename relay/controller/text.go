@@ -53,6 +53,13 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 
 	// get request body
 	var requestBody io.Reader
+	
+	jsonStr, err := json.Marshal(textRequest)
+	if err != nil {
+		logger.Warnf("textRequest JSON: %s", jsonStr)
+	}
+
+
 	if meta.APIType == constant.APITypeOpenAI {
 		// no need to convert request for openai
 		if isModelMapped {
