@@ -56,6 +56,7 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 	
 	jsonStr, err := json.Marshal(textRequest)
 	if err != nil {
+		logger.Info(ctx,fmt.Sprintf("message=%s",jsonStr))
 		logger.Warnf(ctx,"textRequest JSON: %s", jsonStr)
 	}
 
