@@ -71,7 +71,6 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 		// 解析JSON数据
 		if err := json.Unmarshal([]byte(jsonStr), &data); err != nil {
 			fmt.Println("Error parsing JSON:", err)
-			return
 		}
 		var lastUserContent string
 		for _, message := range data.Messages {
