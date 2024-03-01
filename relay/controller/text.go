@@ -69,7 +69,7 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 	if err == nil {
 		var data Data
 		// 解析JSON数据
-		if err := json.Unmarshal([]byte(jsonData), &data); err != nil {
+		if err := json.Unmarshal([]byte(jsonStr), &data); err != nil {
 			fmt.Println("Error parsing JSON:", err)
 			return
 		}
