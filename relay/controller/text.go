@@ -79,7 +79,7 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 				lastUserContent = message.Content
 			}
 		}
-		logger.Info(ctx,fmt.Sprintf("message=%s",lastUserContent))
+		logger.Info(ctx,fmt.Sprintf("message:%s",lastUserContent))
 	}
 
 
@@ -137,9 +137,9 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
         panic(err)
     }
 	if len(response.Choices) > 0 {
-        fmt.Println("response:", response.Choices[0].Text)
+		logger.Info(ctx,fmt.Sprintf("response:%s",response.Choices[0].Text))
     } else {
-        fmt.Println("No response")
+		logger.Info(ctx,"No response")
     }
 
 	meta.IsStream = meta.IsStream || strings.HasPrefix(resp.Header.Get("Content-Type"), "text/event-stream")
