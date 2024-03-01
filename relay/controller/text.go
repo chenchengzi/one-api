@@ -51,16 +51,41 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 		return openai.ErrorWrapper(fmt.Errorf("invalid api type: %d", meta.APIType), "invalid_api_type", http.StatusBadRequest)
 	}
 
-	// get request body
-	var requestBody io.Reader
-	
+	//
+	// 定义JSON数据结构
+	type Data struct {
+		Model     string    `json:"model"`
+		Messages  []Message `json:"messages"`
+		Stream    bool      `json:"stream"`
+		Temperature float64 `json:"temperature"`
+		TopP      float64   `json:"top_p"`
+	}
+	type Message struct {
+		Role    string `json:"role"`
+		Content string `json:"content"`
+	}
 	jsonStr, err := json.Marshal(textRequest)
+	
 	if err == nil {
-		logger.Info(ctx,fmt.Sprintf("message=%s",jsonStr))
-		logger.Warnf(ctx,"textRequest JSON: %s", jsonStr)
+		var data Data
+		// 解析JSON数据
+		if err := json.Unmarshal([]byte(jsonData), &data); err != nil {
+			fmt.Println("Error parsing JSON:", err)
+			return
+		}
+		var lastUserContent string
+		for _, message := range data.Messages {
+			if message.Role == "user" {
+				lastUserContent = message.Content
+			}
+		}
+		logger.Info(ctx,fmt.Sprintf("message=%s",lastUserContent))
 	}
 
 
+
+	// get request body
+	var requestBody io.Reader
 	if meta.APIType == constant.APITypeOpenAI {
 		// no need to convert request for openai
 		if isModelMapped {
