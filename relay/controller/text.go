@@ -130,7 +130,7 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 		} `json:"choices"`
 	}
 	// 读取响应体
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	// 解析响应体
     var response OpenAIResponse
     if err := json.Unmarshal(body, &response); err != nil {
