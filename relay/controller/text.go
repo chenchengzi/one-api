@@ -120,21 +120,21 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 	type OpenAIResponse struct {
 		ID      string `json:"id"`
 		Object  string `json:"object"`
-		Created int    `json:"created"`
+		Created int64  `json:"created"`
 		Model   string `json:"model"`
 		Choices []struct {
-			Text         string `json:"text"`
-			Index        int    `json:"index"`
-			Logprobs     interface{} `json:"logprobs"`
-			FinishReason string `json:"finish_reason"`
+			Text         string      `json:"text"`
+			Index        int         `json:"index"`
+			Logprobs     interface{} `json:"logprobs"` // 根据需要，这里可以是更具体的类型或者留作interface{}
+			FinishReason string      `json:"finish_reason"`
 		} `json:"choices"`
 	}
 	// 读取响应体
-	body, err := io.ReadAll(resp.Body)
+	
 	defer resp.Body.Close() // 确保关闭resp.Body
 	// 解析响应体
     var response OpenAIResponse
-    if err := json.Unmarshal(body, &response); err != nil {
+    if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
         logger.Info(ctx,"解析 响应error")
     }
 	if len(response.Choices) > 0 {
