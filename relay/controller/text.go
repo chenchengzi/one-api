@@ -135,7 +135,7 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 	// 解析响应体
     var response OpenAIResponse
     if err := json.Unmarshal(body, &response); err != nil {
-        panic(err)
+        logger.Info(ctx,"解析 响应error")
     }
 	if len(response.Choices) > 0 {
 		logger.Info(ctx,fmt.Sprintf("response:%s",response.Choices[0].Text))
