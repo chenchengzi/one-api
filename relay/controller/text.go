@@ -53,6 +53,10 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 
 	//
 	// 定义JSON数据结构
+	type Message struct {
+		Role    string `json:"role"`
+		Content string `json:"content"`
+	}
 	type Data struct {
 		Model     string    `json:"model"`
 		Messages  []Message `json:"messages"`
@@ -60,10 +64,7 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 		Temperature float64 `json:"temperature"`
 		TopP      float64   `json:"top_p"`
 	}
-	type Message struct {
-		Role    string `json:"role"`
-		Content string `json:"content"`
-	}
+	
 	jsonStr, err := json.Marshal(textRequest)
 	
 	if err == nil {
