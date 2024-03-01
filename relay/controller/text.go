@@ -115,6 +115,33 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 		logger.Errorf(ctx, "DoRequest failed: %s", err.Error())
 		return openai.ErrorWrapper(err, "do_request_failed", http.StatusInternalServerError)
 	}
+
+	// 定义响应结构体以匹配OpenAI API的响应格式
+	type OpenAIResponse struct {
+		ID      string `json:"id"`
+		Object  string `json:"object"`
+		Created int    `json:"created"`
+		Model   string `json:"model"`
+		Choices []struct {
+			Text         string `json:"text"`
+			Index        int    `json:"index"`
+			Logprobs     interface{} `json:"logprobs"`
+			FinishReason string `json:"finish_reason"`
+		} `json:"choices"`
+	}
+	// 读取响应体
+	body, err := ioutil.ReadAll(resp.Body)
+	// 解析响应体
+    var response OpenAIResponse
+    if err := json.Unmarshal(body, &response); err != nil {
+        panic(err)
+    }
+	if len(response.Choices) > 0 {
+        fmt.Println("response:", response.Choices[0].Text)
+    } else {
+        fmt.Println("No response")
+    }
+
 	meta.IsStream = meta.IsStream || strings.HasPrefix(resp.Header.Get("Content-Type"), "text/event-stream")
 	if resp.StatusCode != http.StatusOK {
 		util.ReturnPreConsumedQuota(ctx, preConsumedQuota, meta.TokenId)
