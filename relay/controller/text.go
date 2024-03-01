@@ -123,7 +123,7 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 	
 	respBody, err := io.ReadAll(resp.Body)
 	
-	logger.SysLog(ctx,fmt.Sprintf("response: \n%s",string(respBody)))
+	logger.Info(ctx,fmt.Sprintf("response: \n%s",string(respBody)))
 
 	// // 定义响应结构体以匹配OpenAI API的响应格式
 	// type OpenAIResponse struct {
