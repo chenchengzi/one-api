@@ -116,32 +116,43 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 		return openai.ErrorWrapper(err, "do_request_failed", http.StatusInternalServerError)
 	}
 
-	// 定义响应结构体以匹配OpenAI API的响应格式
-	type OpenAIResponse struct {
-		ID      string `json:"id"`
-		Object  string `json:"object"`
-		Created int64  `json:"created"`
-		Model   string `json:"model"`
-		Choices []struct {
-			Text         string      `json:"text"`
-			Index        int         `json:"index"`
-			Logprobs     interface{} `json:"logprobs"` // 根据需要，这里可以是更具体的类型或者留作interface{}
-			FinishReason string      `json:"finish_reason"`
-		} `json:"choices"`
-	}
-	// 读取响应体
+
+
+
+
 	
-	defer resp.Body.Close() // 确保关闭resp.Body
-	// 解析响应体
-    var response OpenAIResponse
-    if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-        logger.Info(ctx,"解析 响应error")
-    }
-	if len(response.Choices) > 0 {
-		logger.Info(ctx,fmt.Sprintf("response:%s",response.Choices[0].Text))
-    } else {
-		logger.Info(ctx,"No response")
-    }
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err, nil
+	}
+	logger.SysLog(fmt.Sprintf("response: \n%s",string(respBody)))
+
+	// // 定义响应结构体以匹配OpenAI API的响应格式
+	// type OpenAIResponse struct {
+	// 	ID      string `json:"id"`
+	// 	Object  string `json:"object"`
+	// 	Created int64  `json:"created"`
+	// 	Model   string `json:"model"`
+	// 	Choices []struct {
+	// 		Text         string      `json:"text"`
+	// 		Index        int         `json:"index"`
+	// 		Logprobs     interface{} `json:"logprobs"` // 根据需要，这里可以是更具体的类型或者留作interface{}
+	// 		FinishReason string      `json:"finish_reason"`
+	// 	} `json:"choices"`
+	// }
+	// // 读取响应体
+	
+	// defer resp.Body.Close() // 确保关闭resp.Body
+	// // 解析响应体
+    // var response OpenAIResponse
+    // if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+    //     logger.Info(ctx,"解析 响应error")
+    // }
+	// if len(response.Choices) > 0 {
+	// 	logger.Info(ctx,fmt.Sprintf("response:%s",response.Choices[0].Text))
+    // } else {
+	// 	logger.Info(ctx,"No response")
+    // }
 
 	meta.IsStream = meta.IsStream || strings.HasPrefix(resp.Header.Get("Content-Type"), "text/event-stream")
 	if resp.StatusCode != http.StatusOK {
