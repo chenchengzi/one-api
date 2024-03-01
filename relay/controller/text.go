@@ -131,6 +131,7 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 	}
 	// 读取响应体
 	body, err := io.ReadAll(resp.Body)
+	defer resp.Body.Close() // 确保关闭resp.Body
 	// 解析响应体
     var response OpenAIResponse
     if err := json.Unmarshal(body, &response); err != nil {
