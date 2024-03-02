@@ -88,6 +88,7 @@ func StreamHandler(c *gin.Context, resp *http.Response, relayMode int) (*model.E
 	if err != nil {
 		return ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), ""
 	}
+	logger.SysLog("response:" + responseText)
 	return nil, responseText
 }
 
